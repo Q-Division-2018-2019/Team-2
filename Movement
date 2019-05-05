@@ -1,0 +1,59 @@
+int rightMotor1 = 30, rightMotor2 = 31, leftMotor1 = 32, leftMotor2 = 33;
+char data;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(rightMotor1, OUTPUT);
+  pinMode(rightMotor2, OUTPUT);
+  pinMode(leftMotor1, OUTPUT);
+  pinMode(leftMotor2, OUTPUT);
+}
+
+void loop() {
+  if (Serial.available()) {
+    data = Serial.read();
+    Serial.println(data);
+
+    if (data == 'f') {
+      digitalWrite(rightMotor1, HIGH);
+      digitalWrite(rightMotor2, LOW);
+
+      digitalWrite(leftMotor1, LOW);
+      digitalWrite(leftMotor2, HIGH);
+    }
+
+    else if (data == 'b') {
+      digitalWrite(rightMotor1, LOW);
+      digitalWrite(rightMotor2, HIGH);
+
+      digitalWrite(leftMotor1, HIGH);
+      digitalWrite(leftMotor2, LOW);
+    }
+
+    else if (data == 'l') {
+      digitalWrite(rightMotor1, LOW);
+      digitalWrite(rightMotor2, HIGH);
+
+      digitalWrite(leftMotor1, LOW);
+      digitalWrite(leftMotor2, HIGH);
+
+    }
+
+    else if (data == 'r') {
+      digitalWrite(rightMotor1, HIGH);
+      digitalWrite(rightMotor2, LOW);
+
+      digitalWrite(leftMotor1, HIGH);
+      digitalWrite(leftMotor2, LOW);
+
+    }
+
+    else if (data == 's') {
+      digitalWrite(rightMotor1, LOW);
+      digitalWrite(rightMotor2, LOW);
+
+      digitalWrite(leftMotor1, LOW);
+      digitalWrite(leftMotor2, LOW);
+    }
+  }
+}
