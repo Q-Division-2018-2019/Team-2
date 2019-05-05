@@ -1,4 +1,4 @@
-int rightMotor1 = 30, rightMotor2 = 31, leftMotor1 = 32, leftMotor2 = 33;
+int rightMotor1 = 30, rightMotor2 = 31, leftMotor1 = 32, leftMotor2 = 33; //output pins connected to relays
 char data;
 
 void setup() {
@@ -11,9 +11,10 @@ void setup() {
 
 void loop() {
   if (Serial.available()) {
-    data = Serial.read();
+    data = Serial.read();	//To read choice from the user
     Serial.println(data);
 
+//For Forward Movement
     if (data == 'f') {
       digitalWrite(rightMotor1, HIGH);
       digitalWrite(rightMotor2, LOW);
@@ -22,6 +23,7 @@ void loop() {
       digitalWrite(leftMotor2, HIGH);
     }
 
+//For Backwards Movement
     else if (data == 'b') {
       digitalWrite(rightMotor1, LOW);
       digitalWrite(rightMotor2, HIGH);
@@ -30,6 +32,7 @@ void loop() {
       digitalWrite(leftMotor2, LOW);
     }
 
+//For Turning Left
     else if (data == 'l') {
       digitalWrite(rightMotor1, LOW);
       digitalWrite(rightMotor2, HIGH);
@@ -39,6 +42,7 @@ void loop() {
 
     }
 
+//For Turning Right
     else if (data == 'r') {
       digitalWrite(rightMotor1, HIGH);
       digitalWrite(rightMotor2, LOW);
