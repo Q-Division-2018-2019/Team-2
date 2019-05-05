@@ -1,0 +1,50 @@
+int driver1 = 6, driver2 = 7; //Output pins connected to the motor driver
+int ploPos; //variable to keep track of the plough's position
+char data;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(driver1, OUTPUT);
+  pinMode(driver2, OUTPUT);
+
+  ploPos = 0; //Intial position of the plough
+}
+
+void loop() {
+  if (Serial.available()) {
+    data = Serial.read();
+    Serial.println(data);
+    
+    //To Lower The Plough
+    if (data == 'd') {
+      if (ploPos < 6) {
+        digitalWrite(driver2, HIGH);
+        digitalWrite(driver1, LOW);
+
+        delay(200);
+
+        digitalWrite(driver1, LOW);
+        digitalWrite(driver2, LOW);
+
+        ploPos++;
+        Serial.print(ploPos);
+      }
+    }
+
+    //To Raise The Plough
+    else if (data == 'u') {
+      if (ploPos > 0) {
+        digitalWrite(driver1, HIGH);
+        digitalWrite(driver2, LOW);
+
+        delay(200);
+
+        digitalWrite(driver1, LOW);
+        digitalWrite(driver2, LOW);
+
+        ploPos--;
+        Serial.print(ploPos);
+      }
+    }
+  }
+}
