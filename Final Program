@@ -1,0 +1,155 @@
+#include<Servo.h>
+
+int rightMotor1 = 10, rightMotor2 = 11, leftMotor1 = 48, leftMotor2 = 49; //output pins connected to relays
+int driver1 = 6, driver2 = 7; //output pins connected to motor driver which operates the plough
+int ploPos; //to keep track of plough's position
+int servoPin = 8; //output pin connected to servo
+int pos = 0;  //position of servo arm
+char data;  //to store user's commands
+
+Servo seedServo;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(rightMotor1, OUTPUT);
+  pinMode(rightMotor2, OUTPUT);
+  pinMode(leftMotor1, OUTPUT);
+  pinMode(leftMotor2, OUTPUT);
+
+  seedServo.attach(servoPin);
+
+  seedServo.write(0);
+
+  digitalWrite(rightMotor1, LOW);
+  digitalWrite(rightMotor2, LOW);
+
+  digitalWrite(leftMotor1, LOW);
+  digitalWrite(leftMotor2, LOW);
+
+  ploPos = 0;
+}
+
+void loop() {
+  if (Serial.available()) {
+    data = Serial.read();
+    Serial.println(data);
+
+//for Forward Movement with Dispensing Seeds
+    if (data == 'f') {
+      int flag = 1;
+      //Move until user commands to STOP
+      while (flag == 1) {
+        digitalWrite(rightMotor1, HIGH);
+        digitalWrite(rightMotor2, LOW);
+
+        digitalWrite(leftMotor1, HIGH);
+        digitalWrite(leftMotor2, LOW);
+
+        delay(500);
+
+        digitalWrite(rightMotor1, LOW);
+        digitalWrite(rightMotor2, LOW);
+
+        digitalWrite(leftMotor1, LOW);
+        digitalWrite(leftMotor2, LOW);
+
+        delay(500);                                                                                       
+
+        for (pos = 0; pos < 30; pos++) {
+          seedServo.write(pos);
+          delay(100);
+        }
+
+
+        for (pos = 30; pos < 80; pos++) {
+          seedServo.write(pos);
+          delay(15);
+        }
+
+        for (pos = 80; pos < 110; pos++) {
+          seedServo.write(pos);
+          delay(100);
+        }
+
+        delay(200);
+        seedServo.write(0);
+
+        if (Serial.available()) {
+          char flg = Serial.read();
+          if (flg == 's') //To stop the bot
+            flag = 0;
+        }
+      }
+    }
+
+//to Move Backwards
+    else if (data == 'b') {
+      digitalWrite(rightMotor1, LOW);
+      digitalWrite(rightMotor2, HIGH);
+
+      digitalWrite(leftMotor1, LOW);
+      digitalWrite(leftMotor2, HIGH);
+    }
+
+//to Turn Right
+    else if (data == 'r') {
+      digitalWrite(rightMotor1, LOW);
+      digitalWrite(rightMotor2, HIGH);
+
+      digitalWrite(leftMotor1, HIGH);
+      digitalWrite(leftMotor2, LOW);
+
+    }
+
+//to Turn Left
+    else if (data == 'l') {
+      digitalWrite(rightMotor1, HIGH);
+      digitalWrite(rightMotor2, LOW);
+
+      digitalWrite(leftMotor1, LOW);
+      digitalWrite(leftMotor2, HIGH);
+
+    }
+
+//to Stop the Bot
+    else if (data == 's') {
+      digitalWrite(rightMotor1, LOW);
+      digitalWrite(rightMotor2, LOW);
+
+      digitalWrite(leftMotor1, LOW);
+      digitalWrite(leftMotor2, LOW);
+    }
+
+//to Lower the Plough
+    else if (data == 'd') {
+      if (ploPos < 6) {
+        digitalWrite(driver2, HIGH);
+        digitalWrite(driver1, LOW);
+
+        delay(200);
+
+        digitalWrite(driver1, LOW);
+        digitalWrite(driver2, LOW);
+
+        ploPos++;
+        Serial.print(ploPos);
+      }
+    }
+
+//to Raise the Plough
+    else if (data == 'u') {
+      if (ploPos > 0) {
+        digitalWrite(driver1, HIGH);
+        digitalWrite(driver2, LOW);
+
+        delay(200);
+
+        digitalWrite(driver1, LOW);
+        digitalWrite(driver2, LOW);
+
+        ploPos--;
+        Serial.print(ploPos);
+      }
+    }
+  }
+}
